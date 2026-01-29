@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hexagonal-app
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    
+    # Lee todas las variables del archivo .env
+    env_file:
+      - .env
+    
+    volumes:
+      # Persistir la base de datos SQLite
+      - ./data:/app/data
+    
+    restart: unless-stopped
+    
+    network_mode: host
+    
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

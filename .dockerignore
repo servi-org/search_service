@@ -1,0 +1,40 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+
+# IDE
+.idea/
+.vscode/
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+logs/
+
+# Database (no copiar la BD al build)
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+src/test/

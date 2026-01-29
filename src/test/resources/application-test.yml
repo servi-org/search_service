@@ -1,0 +1,24 @@
+# Test profile configuration
+spring:
+  application:
+    name: hexagonal-template-test
+
+  datasource:
+    url: "jdbc:sqlite::memory:"
+    driver-class-name: org.sqlite.JDBC
+    username: 
+    password: 
+
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+server:
+  port: 0  # Puerto aleatorio para tests
+
+logging:
+  level:
+    com.template.hexagonal: WARN
+    org.springframework.web: WARN
