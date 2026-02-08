@@ -17,7 +17,7 @@ spring:
     show-sql: ${SHOW_SQL:true}  # Muestra las queries SQL en la consola
     properties:
       hibernate:
-        format_sql: true  # Formatea las queries para mejor legibilidad
+        "[format_sql]": true  # Formatea las queries para mejor legibilidad
 
 
 
@@ -31,6 +31,10 @@ server:
 # Logs
 logging:
   level:
-    com.template.hexagonal: ${LOG_LEVEL:DEBUG}
-    org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
+    "[live.servi]": ${LOG_LEVEL:DEBUG}
+    "[org.springframework.web]": INFO
+    "[org.hibernate.SQL]": DEBUG
+
+jwt:
+  secret: ${JWT_SECRET:mi-secreto-super-seguro}
+  expiration: ${JWT_EXPIRATION:3600000} # 1 hora en milisegundos
