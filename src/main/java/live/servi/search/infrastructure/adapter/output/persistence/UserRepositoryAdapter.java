@@ -1,5 +1,6 @@
 package live.servi.search.infrastructure.adapter.output.persistence;
 
+import live.servi.search.domain.exception.DomainException;
 import live.servi.search.domain.model.User;
 import live.servi.search.domain.port.output.UserRepository;
 import live.servi.search.infrastructure.adapter.output.persistence.entity.UserEntity;
@@ -39,6 +40,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public Optional<User> findById(UUID id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         return jpaUserRepository.findById(id)
                 .map(userMapper::toDomain);
     }
