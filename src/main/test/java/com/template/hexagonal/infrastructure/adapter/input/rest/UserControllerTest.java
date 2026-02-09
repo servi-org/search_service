@@ -1,4 +1,4 @@
-package com.template.hexagonal.infrastructure.adapter.input.rest;
+package live.servi.search.infrastructure.adapter.input.rest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

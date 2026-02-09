@@ -1,4 +1,4 @@
-package com.template.hexagonal.service;
+package live.servi.search.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

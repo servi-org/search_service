@@ -20,5 +20,5 @@ server:
 
 logging:
   level:
-    com.template.hexagonal: WARN
+    live.servi.search: WARN
     org.springframework.web: WARN
