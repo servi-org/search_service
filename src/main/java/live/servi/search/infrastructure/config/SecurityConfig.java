@@ -50,13 +50,7 @@ public class SecurityConfig {
             
             // Configurar rutas pub y priv
             .authorizeHttpRequests(auth -> auth
-                // pub
-                .requestMatchers("/auth/user/signup-credentials").permitAll()
-                .requestMatchers("/auth/user/signin-credentials").permitAll()
-                .requestMatchers("/auth/supplier/signup-credentials").permitAll()
-                .requestMatchers("/upload/**").permitAll() //TODO: cambiar en prod y que sea protegida
-                
-                // priv
+                // todas son priv
                 // Si el contexto en null, estas rutas devolverán 403
                 .anyRequest().authenticated()
             )
