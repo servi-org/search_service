@@ -1,6 +1,5 @@
 package live.servi.search.infrastructure.adapter.output.persistence;
 
-import live.servi.search.domain.exception.DomainException;
 import live.servi.search.domain.model.User;
 import live.servi.search.domain.port.output.UserRepository;
 import live.servi.search.infrastructure.adapter.output.persistence.entity.UserEntity;
