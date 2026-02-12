@@ -5,7 +5,6 @@ import live.servi.search.domain.model.Service;
 import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceData;
 import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceSearchResult;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -20,9 +19,8 @@ public class ServiceEventMapper {
                 .priceType(result.getPriceType())
                 .supplierId(UUID.fromString(result.getSupplierId()))
                 .supplierName(result.getSupplierName())
-                .categories(result.getCategories().stream()
-                        .map(Category::valueOf)
-                        .collect(Collectors.toList()))
+                .rating(result.getRating())
+                .category(Category.valueOf(result.getCategory()))
                 .assetUrls(result.getAssetUrls())
                 .build();
     }
@@ -36,9 +34,8 @@ public class ServiceEventMapper {
                 .priceType(data.getPriceType())
                 .supplierId(data.getSupplierId())
                 .supplierName(data.getSupplierName())
-                .categories(data.getCategories().stream()
-                        .map(Category::valueOf)
-                        .collect(Collectors.toList()))
+                .rating(data.getRating())
+                .category(Category.valueOf(data.getCategory()))
                 .assetUrls(data.getAssetUrls())
                 .build();
     }

@@ -16,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceData {
-    
     private UUID id;
     private String title;
     private String description;
@@ -24,7 +23,8 @@ public class ServiceData {
     private String priceType;
     private UUID supplierId;
     private String supplierName;
-    private List<String> categories;
+    private Integer rating;
+    private String category;
     private List<String> assetUrls;
     
 }

@@ -49,7 +49,8 @@ public class SearchService implements SearchUseCase{
             record.put("priceType", serviceData.getPriceType());
             record.put("supplierId", serviceData.getSupplierId());
             record.put("supplierName", serviceData.getSupplierName());
-            record.put("categories", serviceData.getCategories());
+            record.put("category", serviceData.getCategory().name());
+            record.put("rating", serviceData.getRating());
             record.put("assetUrls", serviceData.getAssetUrls());
             
             // Guardar en Algolia

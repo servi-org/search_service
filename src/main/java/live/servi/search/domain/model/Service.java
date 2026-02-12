@@ -16,15 +16,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Service {
-    
     private UUID id;
     private String title;
     private String description;
     private Double price;
     private String priceType;
+    private Integer rating;
     private UUID supplierId;
     private String supplierName;
-    private List<Category> categories;
+    private Category category;
     private List<String> assetUrls;
     
 }

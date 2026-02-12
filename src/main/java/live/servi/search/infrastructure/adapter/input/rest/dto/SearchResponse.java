@@ -16,6 +16,7 @@ public class SearchResponse {
     private String priceType;
     private String supplierId;
     private String supplierName;
-    private List<String> categories;
+    private Integer rating;
+    private String category;
     private List<String> assetUrls;
 }

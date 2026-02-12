@@ -16,9 +16,8 @@ public class SearchRestMapper {
                 .priceType(service.getPriceType())
                 .supplierId(service.getSupplierId().toString())
                 .supplierName(service.getSupplierName())
-                .categories(service.getCategories().stream()
-                        .map(Enum::name)
-                        .toList())
+                .rating(service.getRating())
+                .category(service.getCategory().name())
                 .assetUrls(service.getAssetUrls())
                 .build();
     }
