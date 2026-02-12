@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -40,25 +38,26 @@ public class SearchService implements SearchUseCase{
     @Override
     public void indexService(Service serviceData) {
         try {
-            // Convertir ServiceData a un Map que Algolia pueda entender
-            Map<String, Object> record = new HashMap<>();
-            record.put("objectID", serviceData.getId().toString());
-            record.put("title", serviceData.getTitle());
-            record.put("description", serviceData.getDescription());
-            record.put("price", serviceData.getPrice());
-            record.put("priceType", serviceData.getPriceType());
-            record.put("supplierId", serviceData.getSupplierId());
-            record.put("supplierName", serviceData.getSupplierName());
-            record.put("category", serviceData.getCategory().name());
-            record.put("rating", serviceData.getRating());
-            record.put("assetUrls", serviceData.getAssetUrls());
-            
+            // Convertir ServiceData a un ServiceIndexRecord
+            ServiceIndexRecord record = ServiceIndexRecord.builder()
+                .objectID(serviceData.getId())
+                .title(serviceData.getTitle())
+                .description(serviceData.getDescription())
+                .price(serviceData.getPrice())
+                .priceType(serviceData.getPriceType())
+                .supplierId(serviceData.getSupplierId())
+                .supplierName(serviceData.getSupplierName())
+                .category(serviceData.getCategory().name())
+                .rating(serviceData.getRating())
+                .assetUrls(serviceData.getAssetUrls())
+                .build();
+
             // Guardar en Algolia
             SaveObjectResponse response = searchClient.saveObject(indexName, record);
-            
+
             // Esperar a que Algolia termine de indexar
             searchClient.waitForTask(indexName, response.getTaskID());
-            
+
             log.info("Servicio indexado en Algolia: objectID={}, title='{}'", 
                 serviceData.getId(), serviceData.getTitle());
                 

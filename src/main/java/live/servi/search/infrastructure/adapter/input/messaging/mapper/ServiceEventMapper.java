@@ -4,7 +4,6 @@ import live.servi.search.domain.model.Category;
 import live.servi.search.domain.model.Service;
 import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceData;
 import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceIndexRecord;
-import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -12,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class ServiceEventMapper {
     public Service toDomain(ServiceIndexRecord result) {
         return Service.builder()
-                .id(UUID.fromString(result.getObjectID()))
+                .id(result.getObjectID())
                 .title(result.getTitle())
                 .description(result.getDescription())
                 .price(result.getPrice())
                 .priceType(result.getPriceType())
-                .supplierId(UUID.fromString(result.getSupplierId()))
+                .supplierId(result.getSupplierId())
                 .supplierName(result.getSupplierName())
                 .rating(result.getRating())
                 .category(Category.valueOf(result.getCategory()))
