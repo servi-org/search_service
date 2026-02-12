@@ -1,6 +1,7 @@
 package live.servi.search.application.service;
 
 import com.algolia.api.SearchClient;
+import com.algolia.exceptions.AlgoliaApiException;
 import com.algolia.model.search.*;
 
 import live.servi.search.application.port.input.SearchUseCase;
@@ -90,6 +91,7 @@ public class SearchService implements SearchUseCase{
      * Busca servicios en Algolia.
      * 
      * Esta búsqueda es la que usará el frontend cuando el usuario escriba en el buscador.
+     * Si el índice no existe, devuelve una lista vacía.
      */
     @Override
     public List<Service> searchServices(String query, Integer hitsPerPage, Integer page) {
@@ -120,8 +122,17 @@ public class SearchService implements SearchUseCase{
                     .map(serviceEventMapper::toDomain)
                     .toList();
             
-        } catch (Exception e) {
+        } catch (AlgoliaApiException e) {
+            // Si el índice no existe (404), devolver lista vacía
+            if (e.getStatusCode() == 404) {
+                log.warn("El índice '{}' no existe en Algolia. Devolviendo lista vacía.", indexName);
+                return List.of();
+            }
+            // Para otros errores de Algolia, lanzar excepción
             log.error("Error al buscar en Algolia: {}", e.getMessage(), e);
+            throw new DomainException("INTERNAL_SERVER_ERROR", "Error al buscar en Algolia", 500);
+        } catch (Exception e) {
+            log.error("Error inesperado al buscar en Algolia: {}", e.getMessage(), e);
             throw new DomainException("INTERNAL_SERVER_ERROR", "Error al buscar en Algolia", 500);
         }
     }
