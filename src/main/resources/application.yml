@@ -1,29 +1,34 @@
 spring:
   application:
-    name: hexagonal-template
+    name: search-service
 
-  # Configuración de la base de datos SQLite
-  datasource:
-    url: ${DB_URL:jdbc:sqlite:data/app.db}
-    driver-class-name: ${DB_DRIVER:org.sqlite.JDBC}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
-
-  # Configuración de JPA/Hibernate
-  jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
-    hibernate:
-      ddl-auto: ${DDL_AUTO:create-drop}  # Crea las tablas al iniciar, las elimina al cerrar
-    show-sql: ${SHOW_SQL:true}  # Muestra las queries SQL en la consola
+  # Configuración de Kafka Consumer
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: search-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.UUIDDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
     properties:
-      hibernate:
-        "[format_sql]": true  # Formatea las queries para mejor legibilidad
-
-
+      sasl:
+        mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+        jaas:
+          config: ${KAFKA_SASL_JAAS_CONFIG:}
+      security:
+        protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_SSL}
+      session:
+        timeout:
+          ms: ${KAFKA_SESSION_TIMEOUT_MS:45000}
 
 # Configuración del servidor
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}  # Puerto diferente al backend_java
   error:
     include-message: always
     include-binding-errors: always
@@ -31,13 +36,25 @@ server:
 # Logs
 logging:
   level:
-    "[live.servi]": ${LOG_LEVEL:DEBUG}
-    "[org.springframework.web]": INFO
-    "[org.hibernate.SQL]": DEBUG
+    "[live.servi.search]": ${LOG_LEVEL:INFO}
+    "[org.springframework.kafka]": INFO
+    "[com.algolia]": INFO
 
+#kafka
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  topic-service-events: ${KAFKA_TOPIC_SERVICE_EVENTS:service-events}
+
+# Algolia
+algolia:
+  application-id: ${ALGOLIA_APPLICATION_ID} 
+  api-key: ${ALGOLIA_API_KEY}               
+  index-name: ${ALGOLIA_INDEX_NAME:services}
+
+# JWT
 jwt:
-  secret: ${JWT_SECRET:mi-secreto-super-seguro}
-  expiration: ${JWT_EXPIRATION:3600000} # 1 hora en milisegundos
-
+  secret: ${JWT_SECRET} 
+  
+# CORS Configuration
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:5173}
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}

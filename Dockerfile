@@ -17,7 +17,14 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Crear directorio para la base de datos
+# Copiar el JAR compilado
+COPY --from=build /app/target/*.jar app.jar
+
+# Exponer puerto
+EXPOSE 8081
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
 RUN mkdir -p /app/data
 
 # Copiar el jar desde el stage de build

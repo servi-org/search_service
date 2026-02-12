@@ -48,10 +48,13 @@ public class SecurityConfig {
             // Configurar la gestión de sesiones como stateless (sin sesiones)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // Configurar rutas pub y priv
+            // Configurar rutas públicas y privadas
             .authorizeHttpRequests(auth -> auth
-                // todas son priv
-                // Si el contexto en null, estas rutas devolverán 403
+                // Rutas públicas (health checks)
+                .requestMatchers("/api/search/health").permitAll()
+                
+                // Todas las demás rutas requieren autenticación
+                // Si el contexto es null, estas rutas devolverán 403
                 .anyRequest().authenticated()
             )
             

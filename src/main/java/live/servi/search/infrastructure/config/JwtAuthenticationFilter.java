@@ -13,32 +13,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import live.servi.search.domain.model.TokenParse;
-import live.servi.search.domain.model.User;
-import live.servi.search.domain.port.output.UserRepository;
 import live.servi.search.domain.port.output.security.TokenGenerator;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Optional;
 
 /**
  * Filtro de autenticación JWT
- * 
- * Este filtro intercepta cada request antes de llegar al controller,
- * extrae el jwt de la cookie, lo valida y si es correcto,
- * carga el usuario en el contexto de seguridad de Spring.
- * Así, las rutas protegidas pueden acceder al usuario autenticado.
- * Si el token no es válido o no existe, el contexto queda vacío (no autenticado).
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenGenerator tokenGenerator;
-    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(TokenGenerator tokenGenerator, UserRepository userRepository) {
+    public JwtAuthenticationFilter(TokenGenerator tokenGenerator) {
         this.tokenGenerator = tokenGenerator;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -49,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         
         try {
-            // Extraer el token del header o cookie
+            // Extraer el token del header Authorization o cookie
             String token = extractTokenFromRequest(request);
             
             // Si no hay token, continuar sin autenticar (contexto vacío)
@@ -61,23 +50,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Parsear y validar el token
             TokenParse tokenParse = tokenGenerator.parseToken(token);
             
-            // Buscar el usuario en la BD
-            Optional<User> userOptional = userRepository.findById(tokenParse.getUserId());
+            // Si el token es válido, crear autenticación sin consultar BD
+            // Solo necesitamos el userId del token para identificar al usuario
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                tokenParse.getUserId(),  // principal: userId extraído del token
+                null,                     // credentials: no las necesitamos
+                Collections.emptyList()  // authorities: sin roles por ahora
+            );
             
-            // Si el usuario existe, guardarlo en el SecurityContext
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                
-                // Crear el objeto de autenticación de Spring Security
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    user,                     // principal: el usuario autenticado
-                    null,        // credentials: no las necesitamos después de autenticar
-                    Collections.emptyList()  // authorities: permisos/roles (vacío por ahora)
-                );
-                
-                // Guardar en el SecurityContext (contexto global de Spring Security)
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            // Guardar en el SecurityContext (contexto global de Spring Security)
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             
         } catch (Exception e) {
             // Si hay cualquier error (token inválido, expirado, etc.), 
@@ -91,8 +73,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * Extrae el token JWT del request.
+     * Busca primero en el header Authorization (Bearer token)
+     * y luego en las cookies.
      */
     private String extractTokenFromRequest(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7); // Remover "Bearer "
+        }
+        
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
