@@ -3,14 +3,14 @@ package live.servi.search.infrastructure.adapter.input.messaging.mapper;
 import live.servi.search.domain.model.Category;
 import live.servi.search.domain.model.Service;
 import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceData;
-import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceSearchResult;
+import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceIndexRecord;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceEventMapper {
-    public Service toDomain(ServiceSearchResult result) {
+    public Service toDomain(ServiceIndexRecord result) {
         return Service.builder()
                 .id(UUID.fromString(result.getObjectID()))
                 .title(result.getTitle())

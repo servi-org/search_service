@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class ServiceSearchResult {
+public class ServiceIndexRecord{
     private String objectID;
     private String title;
     private String description;

@@ -6,7 +6,7 @@ import com.algolia.model.search.*;
 import live.servi.search.application.port.input.SearchUseCase;
 import live.servi.search.domain.exception.DomainException;
 import live.servi.search.domain.model.Service;
-import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceSearchResult;
+import live.servi.search.infrastructure.adapter.input.messaging.dto.ServiceIndexRecord;
 import live.servi.search.infrastructure.adapter.input.messaging.mapper.ServiceEventMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +100,7 @@ public class SearchService implements SearchUseCase{
             Integer pageNumber = page != null ? page : 0;
             
             // Realizar búsqueda en Algolia
-            SearchResponses<ServiceSearchResult> response = searchClient.search(
+            SearchResponses<ServiceIndexRecord> response = searchClient.search(
                 new SearchMethodParams().addRequests(
                     new SearchForHits()
                         .setIndexName(indexName)
@@ -108,16 +108,16 @@ public class SearchService implements SearchUseCase{
                         .setHitsPerPage(pageSize)
                         .setPage(pageNumber)
                 ),
-                ServiceSearchResult.class
+                ServiceIndexRecord.class
             );
             
             Integer hitCount = response.getResults().isEmpty() ? 0 : 
-                ((SearchResponse<ServiceSearchResult>) response.getResults().get(0)).getHits().size();
+                ((SearchResponse<ServiceIndexRecord>) response.getResults().get(0)).getHits().size();
             log.info("Búsqueda en Algolia: query='{}', hits={}", 
                 query, hitCount);
             
             return response.getResults().isEmpty() ? List.of() : 
-                ((SearchResponse<ServiceSearchResult>) response.getResults().get(0)).getHits().stream()
+                ((SearchResponse<ServiceIndexRecord>) response.getResults().get(0)).getHits().stream()
                     .map(serviceEventMapper::toDomain)
                     .toList();
             
